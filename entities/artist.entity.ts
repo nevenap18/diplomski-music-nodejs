@@ -10,6 +10,9 @@ export class Artist {
   @Column({ type: 'varchar', name: 'name', length: 255 })
   name: string;
 
+  @Column({ type: 'text' })
+  image: string;
+
   @OneToMany(() => Album, (album) => album.artist)
   albums: Album[];
 

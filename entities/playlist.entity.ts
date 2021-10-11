@@ -3,12 +3,15 @@ import {
   Entity,
   Index,
   JoinColumn,
+  JoinTable,
+  ManyToMany,
   ManyToOne,
   OneToMany,
   PrimaryGeneratedColumn,
 } from 'typeorm';
 import { User } from './user.entity';
 import { SongPlaylist } from './song-playlist.entity';
+import { Song } from './song.entity';
 
 @Index('fk_playlist_user_id', ['userId'], {})
 @Entity('playlist')
@@ -34,4 +37,12 @@ export class Playlist {
 
   @OneToMany(() => SongPlaylist, (songPlaylist) => songPlaylist.playlist)
   songPlaylists: SongPlaylist[];
+
+  @ManyToMany(type => Song)
+  @JoinTable({
+    name: 'song_playlist',
+    joinColumn: { name: 'playlist_id', referencedColumnName: 'playlistId' },
+    inverseJoinColumn: { name: 'song_id', referencedColumnName: 'songId' },
+  })
+  songs: Song[];
 }

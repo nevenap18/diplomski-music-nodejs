@@ -12,9 +12,29 @@ import { Song } from 'entities/song.entity'
 import { User } from 'entities/user.entity'
 import { UserService } from './services/user/user.service'
 import { UserController } from './controllers/api/user.controller'
+import { SongService } from './services/song/song.service'
+import { SongController } from './controllers/api/song.controller'
+import { ArtistController } from './controllers/api/artist.controller'
+import { ArtistService } from './services/artist/artist.service'
+import { AlbumController } from './controllers/api/album.controller'
+import { AlbumService } from './services/album/album.service'
+import { FavoriteAlbums } from 'entities/FavoriteAlbums'
+import { FavoriteSongs } from 'entities/FavoriteSongs'
+import { PlaylistController } from './controllers/api/playlist.controller'
+import { PlaylistService } from './services/playlist/playlist.service'
+import { GenreController } from './controllers/api/genre.controller'
+import { GenreService } from './services/genre/genre.service'
+import { LpController } from './controllers/api/lp.controller'
+import { LpService } from './services/lp/lp.service'
+import { FavoritesController } from './controllers/api/favorites.controller'
+import { FavoritesService } from './services/favorites/favorites.service'
+import { AuthService } from './auth/auth.service'
+import { LocalStrategy } from './auth/local.strategy'
+import { PassportModule } from '@nestjs/passport';
 
 @Module({
   imports: [
+    PassportModule,
     TypeOrmModule.forRoot({
       type: 'mysql',
       host: DatabaseConfig.hostname,
@@ -30,17 +50,45 @@ import { UserController } from './controllers/api/user.controller'
         SongGenre,
         SongPlaylist,
         Song,
-        User
+        User,
+        FavoriteAlbums,
+        FavoriteSongs
       ]
     }),
     TypeOrmModule.forFeature([
-      User
+      User,
+      Song,
+      Artist,
+      Album,
+      Playlist,
+      Genre,
+      FavoriteSongs,
+      FavoriteAlbums
     ])
   ],
   controllers: [
     AppController,
-    UserController
+    UserController,
+    SongController,
+    ArtistController,
+    AlbumController,
+    PlaylistController,
+    GenreController,
+    LpController,
+    FavoritesController
   ],
-  providers: [UserService],
+  providers: 
+  [
+    UserService,
+    SongService,
+    ArtistService,
+    AlbumService,
+    PlaylistService,
+    GenreService,
+    LpService,
+    FavoritesService,
+    AuthService,
+    LocalStrategy
+  ],
 })
 export class AppModule {}

@@ -3,69 +3,61 @@ import {
   Entity,
   Index,
   JoinColumn,
-  JoinTable,
-  ManyToMany,
   ManyToOne,
   OneToMany,
   PrimaryGeneratedColumn,
 } from 'typeorm';
-import { User } from './user.entity';
 import { Album } from './album.entity';
 import { Artist } from './artist.entity';
 import { SongGenre } from './song-genre.entity';
 import { SongPlaylist } from './song-playlist.entity';
+import { FavoriteSongs } from './FavoriteSongs';
 
-@Index('fk_song_artist_id', ['artistId'], {})
-@Index('fk_song_album_id', ['albumId'], {})
-@Entity('song')
+@Index("fk_song_album_id", ["albumId"], {})
+@Index("fk_song_artist_id", ["artistId"], {})
+@Entity("song", { schema: "music" })
 export class Song {
-  @PrimaryGeneratedColumn({ type: 'int', name: 'song_id', unsigned: true })
+  @PrimaryGeneratedColumn({ type: "int", name: "song_id", unsigned: true })
   songId: number;
 
-  @Column({ type: 'int', name: 'artist_id', unsigned: true })
+  @Column("int", { name: "artist_id", unsigned: true, default: () => "'0'" })
   artistId: number;
 
-  @Column({
-    type: 'int',
-    name: 'album_id',
+  @Column("int", {
+    name: "album_id",
     nullable: true,
-    unsigned: true
+    unsigned: true,
+    default: () => "'0'",
   })
   albumId: number | null;
 
-  @Column({ type: 'varchar', length: 255 })
+  @Column("varchar", { name: "title", length: 255, default: () => "'0'" })
   title: string;
 
-  @Column({ type: 'year', nullable: true, default: () => "'2021'" })
+  @Column("year", { name: "year", nullable: true, default: () => "'2021'" })
   year: number | null;
 
-  @Column({ type: 'text' })
+  @Column("text", { name: "url" })
   url: string;
 
-  @Column({ type: 'text', name: 'image_url' })
+  @Column("text", { name: "image_url" })
   imageUrl: string;
 
-  @ManyToMany(() => User, (user) => user.songs)
-  @JoinTable({
-    name: 'favorite_songs',
-    joinColumns: [{ name: 'song_id', referencedColumnName: 'songId' }],
-    inverseJoinColumns: [{ name: 'user_id', referencedColumnName: 'userId' }],
-    schema: 'music',
-  })
-  users: User[];
+  @OneToMany(() => FavoriteSongs, (favoriteSongs) => favoriteSongs.song)
+  favoriteSongs: FavoriteSongs[];
 
   @ManyToOne(() => Album, (album) => album.songs, {
-    onDelete: 'RESTRICT',
-    onUpdate: 'CASCADE',
+    onDelete: "RESTRICT",
+    onUpdate: "CASCADE",
   })
-  @JoinColumn([{ name: 'album_id', referencedColumnName: 'albumId' }])
+  @JoinColumn([{ name: "album_id", referencedColumnName: "albumId" }])
   album: Album;
 
   @ManyToOne(() => Artist, (artist) => artist.songs, {
-    onDelete: 'RESTRICT',
-    onUpdate: 'CASCADE',
+    onDelete: "RESTRICT",
+    onUpdate: "CASCADE",
   })
-  @JoinColumn([{ name: 'artist_id', referencedColumnName: 'artistId' }])
+  @JoinColumn([{ name: "artist_id", referencedColumnName: "artistId" }])
   artist: Artist;
 
   @OneToMany(() => SongGenre, (songGenre) => songGenre.song)

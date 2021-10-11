@@ -12,40 +12,38 @@ import {
 import { Artist } from './artist.entity';
 import { User } from './user.entity';
 import { Song } from './song.entity';
+import { FavoriteAlbums } from './FavoriteAlbums';
 
-@Index('fk_album_artist_id', ['artistId'], {})
-@Entity('album')
+@Index("fk_album_artist_id", ["artistId"], {})
+@Entity("album", { schema: "music" })
 export class Album {
-  @PrimaryGeneratedColumn({ type: 'int', name: 'album_id', unsigned: true })
+  @PrimaryGeneratedColumn({ type: "int", name: "album_id", unsigned: true })
   albumId: number;
 
-  @Column({ type: 'varchar', length: 255})
+  @Column("varchar", { name: "title", length: 255, default: () => "'0'" })
   title: string;
 
-  @Column({ type: 'year', default: () => "'2021'"  })
+  @Column("year", { name: "year", default: () => "'2021'" })
   year: number;
 
-  @Column({ type: 'text' })
+  @Column("text", { name: "description" })
   description: string;
 
-  @Column({ type: 'int', name: 'artist_id', unsigned: true})
+  @Column("int", { name: "artist_id", unsigned: true, default: () => "'0'" })
   artistId: number;
 
+  @Column("text", { name: "image" })
+  image: string;
+
   @ManyToOne(() => Artist, (artist) => artist.albums, {
-    onDelete: 'RESTRICT',
-    onUpdate: 'CASCADE',
+    onDelete: "RESTRICT",
+    onUpdate: "CASCADE",
   })
-  @JoinColumn([{ name: 'artist_id', referencedColumnName: 'artistId' }])
+  @JoinColumn([{ name: "artist_id", referencedColumnName: "artistId" }])
   artist: Artist;
 
-  @ManyToMany(() => User, (user) => user.albums)
-  @JoinTable({
-    name: 'favorite_albums',
-    joinColumns: [{ name: 'album_id', referencedColumnName: 'albumId' }],
-    inverseJoinColumns: [{ name: 'user_id', referencedColumnName: 'userId' }],
-    schema: 'music',
-  })
-  users: User[];
+  @OneToMany(() => FavoriteAlbums, (favoriteAlbums) => favoriteAlbums.album)
+  favoriteAlbums: FavoriteAlbums[];
 
   @OneToMany(() => Song, (song) => song.album)
   songs: Song[];
