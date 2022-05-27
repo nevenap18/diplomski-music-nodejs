@@ -1,5 +1,10 @@
+import { IsBoolean, IsNumber, IsNotEmpty } from 'class-validator'
 export class FavoritesDto {
-  userId: number
+  @IsNotEmpty()
+  @IsNumber()
   favId: number
+  
+  @IsNotEmpty()
+  @IsBoolean()
   value: boolean
 }

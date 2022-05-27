@@ -10,7 +10,7 @@ import { ArtistService } from "src/services/artist/artist.service";
   },
   params: {
     id: {
-      field: 'artistId',
+      field: 'id',
       type: 'number',
       primary: true
     }
@@ -24,6 +24,15 @@ import { ArtistService } from "src/services/artist/artist.service";
         eager: true
       }
     }
+  },
+  routes: {
+    exclude: [
+        'updateOneBase',
+        'replaceOneBase',
+        'deleteOneBase',
+        'createManyBase',
+        'createOneBase'
+    ]
   }
 })
 export class ArtistController {

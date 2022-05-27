@@ -7,7 +7,7 @@ import { FavoritesDto } from 'src/dtos/favorites/favorites.dto'
 import { User } from 'entities/user.entity'
 import { Song } from 'entities/song.entity'
 import { Album } from 'entities/album.entity'
-import { Playlist } from 'entities/playlist.entity'
+import { ErrorResponse } from 'src/respone/api.response.class'
 
 
 @Injectable()
@@ -21,15 +21,15 @@ export class FavoritesService {
     private readonly user: Repository<User>
   ) {}
 
-  async getFavoriteSongs(userId: number): Promise<Song[] | null> {
+  async getFavoriteSongs(userId: number): Promise<Song[]> {
     const user = await this.user.findOne(userId, {
       relations: ['songs']
-    });
+    })
     
     return user.songs
   }
 
-  async getFavoriteAlbums(userId: number): Promise<Album[] | null> {
+  async getFavoriteAlbums(userId: number): Promise<Album[]> {
     const user = await this.user.findOne(userId, {
       relations: ['albums']
     });
@@ -37,43 +37,36 @@ export class FavoritesService {
     return user.albums
   }
 
-  async getPlaylists(userId: number): Promise<Playlist[] | null> {
-    const user = await this.user.findOne(userId, {
-      relations: ['playlists']
-    });
-    
-    return user.playlists
+  async addRemoveFavoriteAlbum(userId: number, data: FavoritesDto): Promise<FavoriteAlbums | ErrorResponse> {
+
+    if (data.value) {
+      let newFavoriteAlbum: FavoriteAlbums = new FavoriteAlbums()
+      newFavoriteAlbum.userId = userId
+      newFavoriteAlbum.albumId = data.favId
+  
+      return this.favoriteAlbums.save(newFavoriteAlbum)
+    } else {
+      const favorite = await this.favoriteAlbums.findOne({
+        userId: userId,
+        albumId: data.favId
+      })
+      return favorite ? this.favoriteAlbums.remove(favorite) : new ErrorResponse(404, 'Album not found', 'error')
+    }
   }
 
-  async addRemoveFavoriteAlbum(data: FavoritesDto): Promise<FavoriteAlbums | null> {
-    const favorite = await this.favoriteAlbums.findOne({
-      userId: data.userId,
-      albumId: data.favId
-    })
+  async addRemoveFavoriteSong(userId: number, data: FavoritesDto): Promise<FavoriteSongs | ErrorResponse> {
+    if (data.value) {
+      let newFavoriteAlbum: FavoriteSongs = new FavoriteSongs()
+      newFavoriteAlbum.userId = userId
+      newFavoriteAlbum.songId = data.favId
 
-    if (favorite && !data.value) {
-      return this.favoriteAlbums.remove(favorite)
+      return this.favoriteSongs.save(newFavoriteAlbum)
+    } else {
+      const favorite = await this.favoriteSongs.findOne({
+        userId: userId,
+        songId: data.favId
+      })
+      return favorite ? this.favoriteSongs.remove(favorite) : new ErrorResponse(404, 'Song not found', 'error')
     }
-    let newFavoriteAlbum: FavoriteAlbums = new FavoriteAlbums()
-    newFavoriteAlbum.userId = data.userId
-    newFavoriteAlbum.albumId = data.favId
-
-    return this.favoriteAlbums.save(newFavoriteAlbum)
-  }
-
-  async addRemoveFavoriteSong(data: FavoritesDto): Promise<FavoriteSongs | null> {
-    const favorite = await this.favoriteSongs.findOne({
-      userId: data.userId,
-      songId: data.favId
-    })
-
-    if (favorite && !data.value) {
-      return this.favoriteSongs.remove(favorite)
-    }
-    let newFavoriteSong: FavoriteSongs = new FavoriteSongs()
-    newFavoriteSong.userId = data.userId
-    newFavoriteSong.songId = data.favId
-
-    return this.favoriteSongs.save(newFavoriteSong)
   }
 }

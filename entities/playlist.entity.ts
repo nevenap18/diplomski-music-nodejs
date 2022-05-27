@@ -17,7 +17,7 @@ import { Song } from './song.entity';
 @Entity('playlist')
 export class Playlist {
   @PrimaryGeneratedColumn({ type: 'int', name: 'playlist_id', unsigned: true })
-  playlistId: number;
+  id: number;
 
   @Column({ type: 'varchar', length: 255})
   title: string;
@@ -27,6 +27,9 @@ export class Playlist {
 
   @Column({ type: 'int', name: 'user_id', unsigned: true })
   userId: number;
+
+  @Column({  type: 'varchar', length: 255, name: 'image_url',  default: () => "'hjdhfjdhfjdhfjd'"  })
+  image: string;
 
   @ManyToOne(() => User, (user) => user.playlists, {
     onDelete: 'RESTRICT',
@@ -41,7 +44,7 @@ export class Playlist {
   @ManyToMany(type => Song)
   @JoinTable({
     name: 'song_playlist',
-    joinColumn: { name: 'playlist_id', referencedColumnName: 'playlistId' },
+    joinColumn: { name: 'playlist_id', referencedColumnName: 'id' },
     inverseJoinColumn: { name: 'song_id', referencedColumnName: 'songId' },
   })
   songs: Song[];

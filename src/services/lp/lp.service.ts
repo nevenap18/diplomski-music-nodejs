@@ -6,7 +6,7 @@ import { Album } from 'entities/album.entity'
 import { Artist } from 'entities/artist.entity'
 import { Genre } from 'entities/genre.entity'
 
-const limit = 8
+const limit = 6
 @Injectable()
 export class LpService {
   constructor(
@@ -20,42 +20,42 @@ export class LpService {
     private readonly playlist: Repository<Playlist>,
   ) {}
 
-  async getLpAlbums(): Promise<Album[] | null> {
+  getLpAlbums(): Promise<Album[] | null> {
     return this.album.find({
       take: limit
     })
   }
-  async getLpArtists(): Promise<Artist[] | null> {
+  getLpArtists(): Promise<Artist[] | null> {
     return this.artist.find({
       take: limit
     })
   }
-  async getLpGenres(): Promise<Genre[] | null> {
+  getLpGenres(): Promise<Genre[] | null> {
     return this.genre.find({
       take: limit
     })
   }
-  async getLpPlaylists(): Promise<Playlist[] | null> {
+  getLpPlaylists(): Promise<Playlist[] | null> {
     return this.playlist.find({
       take: limit
     })
   }
   async getLp(): Promise<any | null> {
-    let lp = {
-      albums: [],
-      artists: [],
-      genres: [],
-      playlists: []
+    const lp = {
+      albums: await this.getLpAlbums(),
+      artists: await this.getLpArtists(),
+      genres: await this.getLpGenres(),
+      playlists: await this.getLpPlaylists()
     }
-    const albums = await this.getLpAlbums()
-    const artists = await this.getLpArtists()
-    const genres = await this.getLpGenres()
-    const playlists = await this.getLpPlaylists()
+    // const albums = this.getLpAlbums()
+    // const artists = this.getLpArtists()
+    // const genres = this.getLpGenres()
+    // const playlists = this.getLpPlaylists()
     
-    lp.albums.push(albums)
-    lp.artists.push(artists)
-    lp.genres.push(genres)
-    lp.playlists.push(playlists)
+    // // lp.albums = albums
+    // lp.artists = artists
+    // lp.genres = genres
+    // lp.playlists = playlists
 
     return lp
   }

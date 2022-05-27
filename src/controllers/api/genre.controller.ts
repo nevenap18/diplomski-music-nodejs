@@ -10,10 +10,19 @@ import { GenreService } from "src/services/genre/genre.service";
   },
   params: {
     id: {
-      field: 'genreId',
+      field: 'id',
       type: 'number',
       primary: true
     }
+  },
+  routes: {
+    exclude: [
+        'updateOneBase',
+        'replaceOneBase',
+        'deleteOneBase',
+        'createManyBase',
+        'createOneBase'
+    ]
   }
 })
 export class GenreController {

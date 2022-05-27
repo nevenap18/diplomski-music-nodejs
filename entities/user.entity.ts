@@ -28,6 +28,9 @@ export class User {
   })
   email: string;
 
+  // @Column({  type: 'varchar', length: 250, name: 'image_url',  default: () => "'https://st3.depositphotos.com/11574170/34371/v/380/depositphotos_343718752-stock-illustration-customer-care-vector-color-line.jpg?forcejpeg=true'"  })
+  // imageUrl: string;
+
   @Column("varchar", {
     name: "username",
     unique: true,
@@ -42,6 +45,9 @@ export class User {
     default: () => "'0'",
   })
   passwordHash: string;
+
+  @Column({  type: 'varchar', length: 500, name: 'image_url',  default: () => "'hjdhfjdhfjdhfjd'"  })
+  image: string;
 
   @OneToMany(() => FavoriteAlbums, (favoriteAlbums) => favoriteAlbums.user)
   favoriteAlbums: FavoriteAlbums[];
@@ -58,13 +64,13 @@ export class User {
     joinColumn: { name: 'user_id', referencedColumnName: 'userId' },
     inverseJoinColumn: { name: 'song_id', referencedColumnName: 'songId' },
   })
-  songs: Song[];
+  songs: Song[]
 
   @ManyToMany(type => Album)
   @JoinTable({
     name: 'favorite_albums',
     joinColumn: { name: 'user_id', referencedColumnName: 'userId' },
-    inverseJoinColumn: { name: 'album_id', referencedColumnName: 'albumId' },
+    inverseJoinColumn: { name: 'album_id', referencedColumnName: 'id' },
   })
   albums: Album[];
 }

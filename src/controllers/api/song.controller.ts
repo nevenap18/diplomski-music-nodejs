@@ -20,10 +20,19 @@ import { SongService } from "src/services/song/song.service";
       album: {
         eager: true
       },
-      artist: {
+      favoriteSongs: {
         eager: true
       }
     }
+  },
+  routes: {
+    exclude: [
+        'updateOneBase',
+        'replaceOneBase',
+        'deleteOneBase',
+        'createManyBase',
+        'createOneBase'
+    ]
   }
 })
 export class SongController {

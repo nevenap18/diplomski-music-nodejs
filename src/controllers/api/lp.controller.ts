@@ -6,7 +6,7 @@ export class LpController {
   constructor(public service: LpService) {}
 
   @Get()
-  async getLp(): Promise<any | null> {
-    return await this.service.getLp()
+  getLp(): Promise<any | null> {
+    return this.service.getLp()
   }
 }

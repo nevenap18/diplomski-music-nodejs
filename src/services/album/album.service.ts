@@ -13,6 +13,4 @@ export class AlbumService extends TypeOrmCrudService<Album> {
   ) {
     super(album)
   }
-
-
 }

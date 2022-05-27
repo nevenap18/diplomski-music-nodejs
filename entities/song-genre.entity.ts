@@ -32,7 +32,7 @@ export class SongGenre {
     onDelete: 'RESTRICT',
     onUpdate: 'CASCADE',
   })
-  @JoinColumn([{ name: 'genre_id', referencedColumnName: 'genreId' }])
+  @JoinColumn([{ name: 'genre_id', referencedColumnName: 'id' }])
   genre: Genre;
 
   @ManyToOne(() => Song, (song) => song.songGenres, {

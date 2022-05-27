@@ -1,9 +1,10 @@
-import { Injectable } from '@nestjs/common'
+import { BadRequestException, Injectable } from '@nestjs/common'
 import { InjectRepository } from '@nestjs/typeorm'
 import { Repository } from 'typeorm'
 import { User } from 'entities/user.entity'
 import { TypeOrmCrudService } from '@nestjsx/crud-typeorm'
-import { AddUserDto } from 'src/dtos/user/add.user.dto'
+import { EditUserDto } from 'src/dtos/user/edit.user.dto'
+import { getPasswordHash } from 'src/auth/hash-password'
 
 
 @Injectable()
@@ -22,21 +23,35 @@ export class UserService extends TypeOrmCrudService<User> {
 
     return user || null
   }
-  add(data: AddUserDto): Promise<User> {
-    let newUser: User = new User()
-    newUser.email = data.email
-    newUser.username = data.username
-    newUser.passwordHash = this.getPasswordHash(data.password)
 
-    return this.user.save(newUser)
+  async getById(userId: number): Promise<User | null> {
+    const user = await this.user.findOne({
+      userId: userId
+    })
+
+    return user || null
+  }
+  
+  async editById(userId: number, data: EditUserDto): Promise<User | null> {
+    let user = await this.getById(userId)
+
+
+    if (!user) {
+      return null
+    }
+
+    user.email = data.email
+    user.username = data.username
+    if (data.password.length >= 8) {
+      const password = getPasswordHash(data.password)
+      user.passwordHash = password
+    } else if (data.password.length > 0 && data.password.length < 8) {
+      throw new BadRequestException('Password must be 8 characters or longer');
+    }
+    return this.user.save(user)
   }
 
-  getPasswordHash(password: string): string {
-    const crypto = require('crypto')
-
-    const hash = crypto.createHash('sha512')
-    hash.update(password)
-
-    return hash.digest('hex').toUpperCase()
-  } 
+  async addUser (newUser: User): Promise<User> {
+    return this.user.save(newUser)
+  }
 }

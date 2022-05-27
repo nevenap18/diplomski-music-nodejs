@@ -18,7 +18,7 @@ import { FavoriteAlbums } from './FavoriteAlbums';
 @Entity("album", { schema: "music" })
 export class Album {
   @PrimaryGeneratedColumn({ type: "int", name: "album_id", unsigned: true })
-  albumId: number;
+  id: number;
 
   @Column("varchar", { name: "title", length: 255, default: () => "'0'" })
   title: string;
@@ -39,7 +39,7 @@ export class Album {
     onDelete: "RESTRICT",
     onUpdate: "CASCADE",
   })
-  @JoinColumn([{ name: "artist_id", referencedColumnName: "artistId" }])
+  @JoinColumn([{ name: "artist_id", referencedColumnName: "id" }])
   artist: Artist;
 
   @OneToMany(() => FavoriteAlbums, (favoriteAlbums) => favoriteAlbums.album)

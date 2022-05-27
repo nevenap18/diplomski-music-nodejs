@@ -1,8 +1,10 @@
-import { Controller } from "@nestjs/common";
+import { Controller, UseGuards } from "@nestjs/common";
 import { Crud } from "@nestjsx/crud";
 import { Album } from "entities/album.entity";
+import { JwtAuthGuard } from "src/auth/jwt-auth.guard";
 import { AlbumService } from "src/services/album/album.service";
 
+@UseGuards(JwtAuthGuard)
 @Controller('api/album')
 @Crud({
   model: {
@@ -10,7 +12,7 @@ import { AlbumService } from "src/services/album/album.service";
   },
   params: {
     id: {
-      field: 'albumId',
+      field: 'id',
       type: 'number',
       primary: true
     }
@@ -24,6 +26,15 @@ import { AlbumService } from "src/services/album/album.service";
         eager: true
       }
     }
+  },
+  routes: {
+    exclude: [
+        'updateOneBase',
+        'replaceOneBase',
+        'deleteOneBase',
+        'createManyBase',
+        'createOneBase'
+    ]
   }
 })
 export class AlbumController {

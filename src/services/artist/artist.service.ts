@@ -13,6 +13,4 @@ export class ArtistService extends TypeOrmCrudService<Artist> {
   ) {
     super(artist)
   }
-
-
 }

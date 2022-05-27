@@ -1,12 +1,10 @@
-import { Controller, Get, Param } from "@nestjs/common";
+import { Body, Controller, Get, Patch, Request } from "@nestjs/common";
 import { Crud } from "@nestjsx/crud";
-import { Album } from "entities/album.entity";
-import { Playlist } from "entities/playlist.entity";
-import { Song } from "entities/song.entity";
 import { User } from "entities/user.entity";
+import { EditUserDto } from "src/dtos/user/edit.user.dto";
 import { UserService } from "src/services/user/user.service";
 
-@Controller('api/user')
+@Controller('api/profile')
 @Crud({
   model: {
     type: User
@@ -18,34 +16,26 @@ import { UserService } from "src/services/user/user.service";
       primary: true
     }
   },
-  query: {
-    join: {
-      favoriteSongs: {
-        eager: true
-      }
-    }
+  routes: {
+    exclude: [
+        'updateOneBase',
+        'replaceOneBase',
+        'deleteOneBase',
+        'createManyBase',
+        'createOneBase'
+    ]
   }
 })
 export class UserController {
   constructor(public service: UserService) {}
 
-  // @Get()
-  // getAll(): Promise<User[]> {
-  //   return this.service.getAll()
-  // }
-
-  // @Get(':id')
-  // getUserById(@Param('id') userId: number): Promise<User> {
-  //   return this.service.getById(userId)
-  // }
-
-  // @Put()
-  // add(@Body() data: AddUserDto): Promise<User> {
-  //   return this.service.add(data)
-  // }
-
-  // @Post(':id')
-  // edit(@Param('id') userId: number, @Body() data: EditUserDto): Promise<User> {
-  //   return this.service.editById(userId, data)
-  // }
+  @Get()
+  getProfile(@Request() req) {
+    // return req.user
+    return this.service.getById(req.user.userId)
+  }
+  @Patch('edit')
+  edit(@Request() req, @Body() data: EditUserDto): Promise<User> {
+    return this.service.editById(req.user.userId, data)
+  }
 }

@@ -31,7 +31,7 @@ export class FavoriteAlbums {
     onDelete: "RESTRICT",
     onUpdate: "CASCADE",
   })
-  @JoinColumn([{ name: "album_id", referencedColumnName: "albumId" }])
+  @JoinColumn([{ name: "album_id", referencedColumnName: "id" }])
   album: Album;
 
   @ManyToOne(() => User, (user) => user.favoriteAlbums, {

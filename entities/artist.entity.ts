@@ -5,10 +5,13 @@ import { Song } from './song.entity';
 @Entity('artist')
 export class Artist {
   @PrimaryGeneratedColumn({ type: 'int', name: 'artist_id', unsigned: true })
-  artistId: number;
+  id: number;
 
   @Column({ type: 'varchar', name: 'name', length: 255 })
   name: string;
+
+  @Column({ type: 'text', name: 'description'})
+  description: string;
 
   @Column({ type: 'text' })
   image: string;

@@ -30,11 +30,20 @@ import { FavoritesController } from './controllers/api/favorites.controller'
 import { FavoritesService } from './services/favorites/favorites.service'
 import { AuthService } from './auth/auth.service'
 import { LocalStrategy } from './auth/local.strategy'
-import { PassportModule } from '@nestjs/passport';
+import { PassportModule } from '@nestjs/passport'
+import { JwtModule } from '@nestjs/jwt';
+import { jwtConstants } from './auth/constants'
+import { JwtStrategy } from './auth/jwt.strategy'
+import { JwtAuthGuard } from './auth/jwt-auth.guard'
+import { APP_GUARD } from '@nestjs/core'
 
 @Module({
   imports: [
     PassportModule,
+    JwtModule.register({
+      secret: jwtConstants.secret,
+      signOptions: { expiresIn: '864000s' },
+    }),
     TypeOrmModule.forRoot({
       type: 'mysql',
       host: DatabaseConfig.hostname,
@@ -63,7 +72,8 @@ import { PassportModule } from '@nestjs/passport';
       Playlist,
       Genre,
       FavoriteSongs,
-      FavoriteAlbums
+      FavoriteAlbums,
+      SongPlaylist
     ])
   ],
   controllers: [
@@ -88,7 +98,12 @@ import { PassportModule } from '@nestjs/passport';
     LpService,
     FavoritesService,
     AuthService,
-    LocalStrategy
+    LocalStrategy,
+    JwtStrategy,
+    {
+      provide: APP_GUARD,
+      useClass: JwtAuthGuard,
+    }
   ],
 })
 export class AppModule {}

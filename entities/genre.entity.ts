@@ -5,13 +5,16 @@ import { Song } from './song.entity';
 @Entity('genre')
 export class Genre {
   @PrimaryGeneratedColumn({ type: 'int', name: 'genre_id', unsigned: true })
-  genreId: number;
+  id: number;
 
   @Column({ type: 'varchar', length: 255 })
   title: string;
+  
+  @Column({ type: 'text', name: 'description'})
+  description: string;
 
   @Column({ type: 'text', name: 'image_url' })
-  imageUrl: string;
+  image: string;
 
   @OneToMany(() => SongGenre, (songGenre) => songGenre.genre)
   songGenres: SongGenre[];
@@ -19,7 +22,7 @@ export class Genre {
   @ManyToMany(type => Song)
   @JoinTable({
     name: 'song_genre',
-    joinColumn: { name: 'genre_id', referencedColumnName: 'genreId' },
+    joinColumn: { name: 'genre_id', referencedColumnName: 'id' },
     inverseJoinColumn: { name: 'song_id', referencedColumnName: 'songId' },
   })
   songs: Song[];

@@ -14,9 +14,18 @@ export class GenreService extends TypeOrmCrudService<Genre> {
     super(genre)
   }
 
-  async getGenreById(playlistId: number): Promise<Genre | null> {
-    return this.genre.findOne(playlistId, {
-      relations: ['songs']
+  async getGenreById(genreId: number): Promise<Genre | null> {
+    return this.genre.findOne({
+      where: {
+          id: genreId
+      },
+      join: {
+          alias: 'genre',
+          leftJoinAndSelect: {
+              'songs': 'genre.songs',
+              'artist': 'songs.artist'
+          }
+      }
     })
   }
 }

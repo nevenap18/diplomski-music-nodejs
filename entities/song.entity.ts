@@ -3,6 +3,8 @@ import {
   Entity,
   Index,
   JoinColumn,
+  JoinTable,
+  ManyToMany,
   ManyToOne,
   OneToMany,
   PrimaryGeneratedColumn,
@@ -50,14 +52,14 @@ export class Song {
     onDelete: "RESTRICT",
     onUpdate: "CASCADE",
   })
-  @JoinColumn([{ name: "album_id", referencedColumnName: "albumId" }])
+  @JoinColumn([{ name: "album_id", referencedColumnName: "id" }])
   album: Album;
 
+  @JoinColumn([{ name: "artist_id", referencedColumnName: "id" }])
   @ManyToOne(() => Artist, (artist) => artist.songs, {
     onDelete: "RESTRICT",
     onUpdate: "CASCADE",
   })
-  @JoinColumn([{ name: "artist_id", referencedColumnName: "artistId" }])
   artist: Artist;
 
   @OneToMany(() => SongGenre, (songGenre) => songGenre.song)
@@ -65,4 +67,5 @@ export class Song {
 
   @OneToMany(() => SongPlaylist, (songPlaylist) => songPlaylist.song)
   songPlaylists: SongPlaylist[];
+
 }
