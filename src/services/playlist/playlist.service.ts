@@ -56,7 +56,7 @@ export class PlaylistService extends TypeOrmCrudService<Playlist> {
 
   async getAllUserPlaylists(userId: number): Promise<Playlist[] | null> {
     const user = await this.user.findOne(userId, {
-      relations: ['playlists']
+      relations: ['playlists', 'playlists.songs']
     })
     
     return user.playlists
@@ -72,23 +72,31 @@ export class PlaylistService extends TypeOrmCrudService<Playlist> {
   }
 
   async addSongToPlaylist(userId: number, data: AddSongPlaylistDto): Promise<SongPlaylist | ErrorResponse> {
+    console.log(data)
 
     const playlist = await this.getPlaylist(userId, data.playlistId)
+    console.log(playlist, '2')
     if (!playlist) {
       return new ErrorResponse(404, playlistNotFound, 'error')
     }
     const song = await this.song.findOne(data.songId)
+    console.log(song, '3')
     if (!song) {
       return new ErrorResponse(404, 'Song not found', 'error')
     }
-    const songPlaylist = await this.songPlaylist.findOne({
+    const songPlaylistObj = await this.songPlaylist.findOne({
       songId: data.songId,
       playlistId: data.playlistId
     })
-    songPlaylist.songId = data.songId
-    songPlaylist.playlistId = data.playlistId
+    if (songPlaylistObj) {
+      return new ErrorResponse(404, 'Song already in playlist', 'error')
+    }
+    const newSongPlaylistObj: SongPlaylist = new SongPlaylist()
+    newSongPlaylistObj.songId = data.songId
+    newSongPlaylistObj.playlistId = data.playlistId
+    console.log(newSongPlaylistObj)
 
-    return this.songPlaylist.save(songPlaylist)
+    return this.songPlaylist.save(newSongPlaylistObj)
   }
 
   async removeSongFromPlaylist(userId: number, data: RemoveSongPlaylistDto): Promise<SongPlaylist | ErrorResponse> {
