@@ -22,17 +22,35 @@ export class FavoritesService {
   ) {}
 
   async getFavoriteSongs(userId: number): Promise<Song[]> {
-    const user = await this.user.findOne(userId, {
-      relations: ['songs']
+    const user = await this.user.findOne({
+      where: {
+          userId
+      },
+      join: {
+          alias: 'user',
+          leftJoinAndSelect: {
+              'songs': 'user.songs',
+              'artist': 'songs.artist'
+          }
+      }
     })
     
     return user.songs
   }
 
   async getFavoriteAlbums(userId: number): Promise<Album[]> {
-    const user = await this.user.findOne(userId, {
-      relations: ['albums']
-    });
+    const user = await this.user.findOne({
+      where: {
+          userId
+      },
+      join: {
+          alias: 'user',
+          leftJoinAndSelect: {
+              'albums': 'user.albums',
+              'artist': 'albums.artist'
+          }
+      }
+    })
     
     return user.albums
   }
@@ -40,14 +58,14 @@ export class FavoritesService {
   async addRemoveFavoriteAlbum(userId: number, data: FavoritesDto): Promise<FavoriteAlbums | ErrorResponse> {
 
     if (data.value) {
-      let newFavoriteAlbum: FavoriteAlbums = new FavoriteAlbums()
+      const newFavoriteAlbum: FavoriteAlbums = new FavoriteAlbums()
       newFavoriteAlbum.userId = userId
       newFavoriteAlbum.albumId = data.favId
   
       return this.favoriteAlbums.save(newFavoriteAlbum)
     } else {
       const favorite = await this.favoriteAlbums.findOne({
-        userId: userId,
+        userId,
         albumId: data.favId
       })
       return favorite ? this.favoriteAlbums.remove(favorite) : new ErrorResponse(404, 'Album not found', 'error')
@@ -56,14 +74,14 @@ export class FavoritesService {
 
   async addRemoveFavoriteSong(userId: number, data: FavoritesDto): Promise<FavoriteSongs | ErrorResponse> {
     if (data.value) {
-      let newFavoriteAlbum: FavoriteSongs = new FavoriteSongs()
+      const newFavoriteAlbum: FavoriteSongs = new FavoriteSongs()
       newFavoriteAlbum.userId = userId
       newFavoriteAlbum.songId = data.favId
 
       return this.favoriteSongs.save(newFavoriteAlbum)
     } else {
       const favorite = await this.favoriteSongs.findOne({
-        userId: userId,
+        userId,
         songId: data.favId
       })
       return favorite ? this.favoriteSongs.remove(favorite) : new ErrorResponse(404, 'Song not found', 'error')

@@ -20,6 +20,9 @@ import { SongService } from "src/services/song/song.service";
       album: {
         eager: true
       },
+      artist: {
+        eager: true
+      },
       favoriteSongs: {
         eager: true
       }

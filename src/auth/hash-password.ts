@@ -5,4 +5,4 @@ export const getPasswordHash = (password: string): string => {
   hash.update(password)
 
   return hash.digest('hex').toUpperCase()
-} 
+}
