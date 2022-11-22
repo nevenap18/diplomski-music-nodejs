@@ -22,9 +22,6 @@ import { SongService } from "src/services/song/song.service";
       },
       artist: {
         eager: true
-      },
-      favoriteSongs: {
-        eager: true
       }
     }
   },

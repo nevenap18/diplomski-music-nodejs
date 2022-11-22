@@ -72,15 +72,12 @@ export class PlaylistService extends TypeOrmCrudService<Playlist> {
   }
 
   async addSongToPlaylist(userId: number, data: AddSongPlaylistDto): Promise<SongPlaylist | ErrorResponse> {
-    console.log(data)
 
     const playlist = await this.getPlaylist(userId, data.playlistId)
-    console.log(playlist, '2')
     if (!playlist) {
       return new ErrorResponse(404, playlistNotFound, 'error')
     }
     const song = await this.song.findOne(data.songId)
-    console.log(song, '3')
     if (!song) {
       return new ErrorResponse(404, 'Song not found', 'error')
     }
@@ -94,7 +91,6 @@ export class PlaylistService extends TypeOrmCrudService<Playlist> {
     const newSongPlaylistObj: SongPlaylist = new SongPlaylist()
     newSongPlaylistObj.songId = data.songId
     newSongPlaylistObj.playlistId = data.playlistId
-    console.log(newSongPlaylistObj)
 
     return this.songPlaylist.save(newSongPlaylistObj)
   }

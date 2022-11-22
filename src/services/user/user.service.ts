@@ -33,7 +33,7 @@ export class UserService extends TypeOrmCrudService<User> {
   }
   
   async editById(userId: number, data: EditUserDto): Promise<User | null> {
-    let user = await this.getById(userId)
+    const user = await this.getById(userId)
 
 
     if (!user) {

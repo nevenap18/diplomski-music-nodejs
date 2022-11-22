@@ -37,7 +37,7 @@ export class AuthService {
     }     
   }
   async register(data: AddUserDto): Promise<User> {
-    let newUser: User = new User()
+    const newUser: User = new User()
     newUser.email = data.email
     newUser.username = data.username
     newUser.passwordHash = getPasswordHash(data.password)

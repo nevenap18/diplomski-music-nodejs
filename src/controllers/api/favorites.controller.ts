@@ -1,8 +1,7 @@
-import { Body, Request, Controller, Get, Param, Post } from "@nestjs/common";
+import { Body, Request, Controller, Get, Post } from "@nestjs/common";
 import { Album } from "entities/album.entity";
 import { FavoriteAlbums } from "entities/FavoriteAlbums";
 import { FavoriteSongs } from "entities/FavoriteSongs";
-import { Song } from "entities/song.entity";
 import { FavoritesDto } from "src/dtos/favorites/favorites.dto";
 import { ErrorResponse } from "src/respone/api.response.class";
 import { FavoritesService } from "src/services/favorites/favorites.service";
@@ -12,7 +11,7 @@ export class FavoritesController {
   constructor(public service: FavoritesService) {}
 
   @Get('songs')
-  getFavoriteSongsByUserId(@Request() req): Promise<Song[]> {
+  getFavoriteSongsByUserId(@Request() req): Promise<any> {
     return this.service.getFavoriteSongs(req.user.userId)
   }
 

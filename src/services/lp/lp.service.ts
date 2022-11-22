@@ -6,7 +6,7 @@ import { Album } from 'entities/album.entity'
 import { Artist } from 'entities/artist.entity'
 import { Genre } from 'entities/genre.entity'
 
-const limit = 6
+const limit = 5
 @Injectable()
 export class LpService {
   constructor(
@@ -22,6 +22,7 @@ export class LpService {
 
   getLpAlbums(): Promise<Album[] | null> {
     return this.album.find({
+      relations: ['artist'],
       take: limit
     })
   }
@@ -35,28 +36,20 @@ export class LpService {
       take: limit
     })
   }
-  getLpPlaylists(): Promise<Playlist[] | null> {
+  getLpPlaylists(userId: number): Promise<Playlist[] | null> {
     return this.playlist.find({
+      where: {
+          userId
+      },
       take: limit
     })
   }
-  async getLp(): Promise<any | null> {
-    const lp = {
+  async getLp(userId: number): Promise<any | null> {
+    return {
       albums: await this.getLpAlbums(),
       artists: await this.getLpArtists(),
-      genres: await this.getLpGenres(),
-      playlists: await this.getLpPlaylists()
+      playlists: await this.getLpPlaylists(userId),
+      genres: await this.getLpGenres()
     }
-    // const albums = this.getLpAlbums()
-    // const artists = this.getLpArtists()
-    // const genres = this.getLpGenres()
-    // const playlists = this.getLpPlaylists()
-    
-    // // lp.albums = albums
-    // lp.artists = artists
-    // lp.genres = genres
-    // lp.playlists = playlists
-
-    return lp
   }
 }

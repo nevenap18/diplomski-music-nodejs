@@ -36,9 +36,6 @@ export class Song {
   @Column("varchar", { name: "title", length: 255, default: () => "'0'" })
   title: string;
 
-  @Column("year", { name: "year", nullable: true, default: () => "'2021'" })
-  year: number | null;
-
   @Column("text", { name: "url" })
   url: string;
 

@@ -14,4 +14,8 @@ export class EditUserDto {
   @IsString()
   @Length(0, 255)
   password: string
+
+  @IsString()
+  @Length(0, 255)
+  oldPassword: string
 }
