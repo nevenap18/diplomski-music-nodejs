@@ -10,7 +10,6 @@ import {
   PrimaryGeneratedColumn,
 } from 'typeorm';
 import { Artist } from './artist.entity';
-import { User } from './user.entity';
 import { Song } from './song.entity';
 import { FavoriteAlbums } from './FavoriteAlbums';
 
